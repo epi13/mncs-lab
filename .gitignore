@@ -1,0 +1,15 @@
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Local build / experiment output
+build/
+target/
+.tmp/
+*.profraw
+*.profdata
+
+# Local session state
+.mncs-lab/
