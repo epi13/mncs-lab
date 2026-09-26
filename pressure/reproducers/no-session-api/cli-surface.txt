@@ -1,0 +1,25 @@
+MNCS language research tools
+
+Usage:
+  mncs validate <manifest.json>
+  mncs language-inventory
+  mncs declaration-inventory <program.mncs> [--syntax-only]
+  mncs test-inventory <program.mncs>
+  mncs test <program.mncs> [--library ROOT ...] [--filter SELECTOR ...] [--test-identity ID ... | --verification-plan FILE] [--step-budget N] [--result FILE] [--check-result FILE] [--artifacts DIR] [--format json|text]
+  mncs call <program.mncs> --module MODULE --function FUNCTION --args FILE [--library ROOT ...] [--step-budget N] [--result FILE] [--grant-process capability=executable] [--grant-structured capability] [--grant-fs capability=root-path]
+  mncs run-app DESCRIPTOR [--library ROOT ...] [--grant-process capability=executable] [--grant-structured capability] [--grant-fs capability=root-path] [--step-budget N] [-- APP_ARG ...]
+  mncs run-app <program.mncs> --module MODULE --function FUNCTION --args FILE  (compatibility route)
+  mncs process PROGRAM [--arg ARG ...] [--cwd DIR] [--env KEY=VALUE ...] [--stdin FILE] [--stdout-limit N] [--stderr-limit N] [--deadline-ms N] [--result FILE]
+  mncs canonicalize <manifest.json>
+  mncs identity <manifest.json>
+  mncs graph <manifest.json>
+  mncs evidence-manifest <manifest.json>
+  mncs ir <manifest.json>
+  mncs ssa <manifest.json>
+  mncs obligations <manifest.json>
+  mncs verify <manifest.json>
+  mncs diagnose <manifest.json>
+  mncs body <manifest.json>
+  mncs trace <manifest.json>
+  mncs verifier-request <manifest.json>
+  mncs execute <program.json> <execution-request.json>

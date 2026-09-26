@@ -1,0 +1,109 @@
+{
+ "record": "LAB-EXP-001",
+ "record_digest": "sha256:20c082b789c55c82adbee9164e1cfc67e2dbb077b2bdaf2df4d690201b07f44f",
+ "observations": [
+  {
+   "variant": "wasm",
+   "kernel": "mncs.lab.outcome",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "result_digest": "sha256:e2ab366b53a7b50ff16fd7052b739abb4ad66ac7dd6ee52de03a73992b5ce48f"
+  },
+  {
+   "variant": "wasm",
+   "kernel": "mncs.lab.variants",
+   "status": "PASS",
+   "cases_total": 8,
+   "cases_met": 8,
+   "unmet": [],
+   "result_digest": "sha256:6557c1fa4403d55176041ce38d6e43a9e4b6572c6da26d31f9af39b4a5522338"
+  },
+  {
+   "variant": "wasm",
+   "kernel": "mncs.lab.session",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "result_digest": "sha256:b539fe723ff88ba3309ad2be9ced8129b4c103ea9389c27cca989f1a503f7f70"
+  },
+  {
+   "variant": "bytecode",
+   "kernel": "mncs.lab.outcome",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "result_digest": "sha256:d523c29f1addefdbc02186df256845c4ae25dac0b807abfd9a6a20a34206ab74"
+  },
+  {
+   "variant": "bytecode",
+   "kernel": "mncs.lab.variants",
+   "status": "PASS",
+   "cases_total": 8,
+   "cases_met": 8,
+   "unmet": [],
+   "result_digest": "sha256:cdf87ff91f8d78da83fe31f0c9fe8b66f36168c729aae1647fe7025764740db1"
+  },
+  {
+   "variant": "bytecode",
+   "kernel": "mncs.lab.session",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "result_digest": "sha256:eb4cbcf9e1c5c0a392b2c2f1693568412163872b275f93e172817f47ce40bf23"
+  }
+ ],
+ "agreement": {
+  "compared": 42,
+  "agreements": [
+   "mncs.lab.outcome::cls-contra",
+   "mncs.lab.outcome::cls-inconclusive",
+   "mncs.lab.outcome::cls-support",
+   "mncs.lab.outcome::cls-unknown",
+   "mncs.lab.outcome::cls-vacuous",
+   "mncs.lab.outcome::code-c",
+   "mncs.lab.outcome::code-i",
+   "mncs.lab.outcome::code-s",
+   "mncs.lab.outcome::code-u",
+   "mncs.lab.outcome::comb-cs",
+   "mncs.lab.outcome::comb-is",
+   "mncs.lab.outcome::comb-iu",
+   "mncs.lab.outcome::comb-sc",
+   "mncs.lab.outcome::comb-ss",
+   "mncs.lab.outcome::comb-uu",
+   "mncs.lab.outcome::decided-i",
+   "mncs.lab.outcome::decided-s",
+   "mncs.lab.variants::ctrl-double",
+   "mncs.lab.variants::ctrl-ok",
+   "mncs.lab.variants::ctrl-ok-zero",
+   "mncs.lab.variants::ctrl-same",
+   "mncs.lab.variants::ctrl-wrong-dim",
+   "mncs.lab.variants::diff-four",
+   "mncs.lab.variants::diff-one",
+   "mncs.lab.variants::diff-same",
+   "mncs.lab.session::disp-commit",
+   "mncs.lab.session::disp-inspect",
+   "mncs.lab.session::disp-reject-incomplete",
+   "mncs.lab.session::disp-reject-invalid",
+   "mncs.lab.session::frag-incomplete",
+   "mncs.lab.session::frag-incomplete-valid",
+   "mncs.lab.session::frag-invalid",
+   "mncs.lab.session::frag-valid",
+   "mncs.lab.session::gen-ok",
+   "mncs.lab.session::gen-skip",
+   "mncs.lab.session::gen-stay",
+   "mncs.lab.session::reset-all-observability",
+   "mncs.lab.session::reset-code-artifact",
+   "mncs.lab.session::reset-definitions-proof",
+   "mncs.lab.session::reset-history-runtime",
+   "mncs.lab.session::reset-history-source",
+   "mncs.lab.session::reset-values-jit"
+  ],
+  "disagreements": [],
+  "unknowns": []
+ }
+}

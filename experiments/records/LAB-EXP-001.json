@@ -1,0 +1,229 @@
+{
+ "schema_version": "mncs-lab.experiment-record/1",
+ "id": "LAB-EXP-001",
+ "definition_digest": "sha256:3cdbfbbc078ba017e8e3a68b2f01d59459d5774fbb8211a8105c3f5e8c76c112",
+ "executed_at": "2026-09-26T05:43:50.694160+00:00",
+ "question": "Do the portable-WASM and research-bytecode backends agree on Lab kernel semantics over the fixed corpora?",
+ "hypothesis": {
+  "statement": "Both backends return identical observations for every case of every Lab kernel corpus.",
+  "predicted_standing": "SUPPORTED"
+ },
+ "toolchain": {
+  "executor": "/home/epi13/Documents/Projects/mncs-language/target/release/mncs",
+  "executor_version": "mncs 0.1.0",
+  "language_revision": "066897e97a8499a25ea33611d47cc7a4fcdc2b48",
+  "lab_revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+  "library_path": "/home/epi13/Documents/Projects/mncs-lab:/home/epi13/Documents/Projects/mncs-test/native:/home/epi13/Documents/Projects/mncs-language/library"
+ },
+ "subjects": [
+  {
+   "kind": "mncs-kernel",
+   "repo": "mncs-lab",
+   "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+   "module": "mncs.lab.outcome",
+   "source": "mncs/lab/outcome.mncs",
+   "source_digest": "sha256:0bb8b16aead8ebb8cf31e4966f50fdaebc7b3db440f749772070d3c00cf31868"
+  },
+  {
+   "kind": "mncs-kernel",
+   "repo": "mncs-lab",
+   "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+   "module": "mncs.lab.variants",
+   "source": "mncs/lab/variants.mncs",
+   "source_digest": "sha256:42c2b23a1e96e5892ca77bf6947d8986e2c2fc0d91b642bbdb924aafaf30cf28"
+  },
+  {
+   "kind": "mncs-kernel",
+   "repo": "mncs-lab",
+   "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+   "module": "mncs.lab.session",
+   "source": "mncs/lab/session.mncs",
+   "source_digest": "sha256:0c9bd3283d07abc044269fbd6a12371d159bad0d13917c120fe52f6e2d87ce77"
+  }
+ ],
+ "variants": [
+  {
+   "id": "wasm",
+   "backend": "mncs-portable-wasm-mvp",
+   "codes": [
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "bytecode",
+   "backend": "mncs-research-bytecode",
+   "codes": [
+    1,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "controls": [
+  "identical subject source bytes across variants (revision-pinned)",
+  "identical corpora and step budgets across variants",
+  "identical toolchain revision and library path across variants",
+  "only the backend dimension varies between variants"
+ ],
+ "observations": [
+  {
+   "variant": "wasm",
+   "backend": "mncs-portable-wasm-mvp",
+   "kernel": "mncs.lab.outcome",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "unexecuted": [],
+   "result_digest": "sha256:e2ab366b53a7b50ff16fd7052b739abb4ad66ac7dd6ee52de03a73992b5ce48f"
+  },
+  {
+   "variant": "wasm",
+   "backend": "mncs-portable-wasm-mvp",
+   "kernel": "mncs.lab.variants",
+   "status": "PASS",
+   "cases_total": 8,
+   "cases_met": 8,
+   "unmet": [],
+   "unexecuted": [],
+   "result_digest": "sha256:6557c1fa4403d55176041ce38d6e43a9e4b6572c6da26d31f9af39b4a5522338"
+  },
+  {
+   "variant": "wasm",
+   "backend": "mncs-portable-wasm-mvp",
+   "kernel": "mncs.lab.session",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "unexecuted": [],
+   "result_digest": "sha256:b539fe723ff88ba3309ad2be9ced8129b4c103ea9389c27cca989f1a503f7f70"
+  },
+  {
+   "variant": "bytecode",
+   "backend": "mncs-research-bytecode",
+   "kernel": "mncs.lab.outcome",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "unexecuted": [],
+   "result_digest": "sha256:d523c29f1addefdbc02186df256845c4ae25dac0b807abfd9a6a20a34206ab74"
+  },
+  {
+   "variant": "bytecode",
+   "backend": "mncs-research-bytecode",
+   "kernel": "mncs.lab.variants",
+   "status": "PASS",
+   "cases_total": 8,
+   "cases_met": 8,
+   "unmet": [],
+   "unexecuted": [],
+   "result_digest": "sha256:cdf87ff91f8d78da83fe31f0c9fe8b66f36168c729aae1647fe7025764740db1"
+  },
+  {
+   "variant": "bytecode",
+   "backend": "mncs-research-bytecode",
+   "kernel": "mncs.lab.session",
+   "status": "PASS",
+   "cases_total": 17,
+   "cases_met": 17,
+   "unmet": [],
+   "unexecuted": [],
+   "result_digest": "sha256:eb4cbcf9e1c5c0a392b2c2f1693568412163872b275f93e172817f47ce40bf23"
+  }
+ ],
+ "variant_integrity": {
+  "ok": true,
+  "witnesses": [
+   {
+    "met": true,
+    "status": "PASS",
+    "corpus_digest": "sha256:60f8ef172cd60ffc45abfbca466da10a8d53d59e0b0ce05eca392588b99161f0",
+    "result_digest": "sha256:6b13edad8af9cc62656e0b3accd231f3aeeebdfe3304ff44603e0648285eabd0",
+    "pair": [
+     "wasm",
+     "bytecode"
+    ]
+   }
+  ]
+ },
+ "agreement": {
+  "compared": 42,
+  "agreements": [
+   "mncs.lab.outcome::cls-contra",
+   "mncs.lab.outcome::cls-inconclusive",
+   "mncs.lab.outcome::cls-support",
+   "mncs.lab.outcome::cls-unknown",
+   "mncs.lab.outcome::cls-vacuous",
+   "mncs.lab.outcome::code-c",
+   "mncs.lab.outcome::code-i",
+   "mncs.lab.outcome::code-s",
+   "mncs.lab.outcome::code-u",
+   "mncs.lab.outcome::comb-cs",
+   "mncs.lab.outcome::comb-is",
+   "mncs.lab.outcome::comb-iu",
+   "mncs.lab.outcome::comb-sc",
+   "mncs.lab.outcome::comb-ss",
+   "mncs.lab.outcome::comb-uu",
+   "mncs.lab.outcome::decided-i",
+   "mncs.lab.outcome::decided-s",
+   "mncs.lab.variants::ctrl-double",
+   "mncs.lab.variants::ctrl-ok",
+   "mncs.lab.variants::ctrl-ok-zero",
+   "mncs.lab.variants::ctrl-same",
+   "mncs.lab.variants::ctrl-wrong-dim",
+   "mncs.lab.variants::diff-four",
+   "mncs.lab.variants::diff-one",
+   "mncs.lab.variants::diff-same",
+   "mncs.lab.session::disp-commit",
+   "mncs.lab.session::disp-inspect",
+   "mncs.lab.session::disp-reject-incomplete",
+   "mncs.lab.session::disp-reject-invalid",
+   "mncs.lab.session::frag-incomplete",
+   "mncs.lab.session::frag-incomplete-valid",
+   "mncs.lab.session::frag-invalid",
+   "mncs.lab.session::frag-valid",
+   "mncs.lab.session::gen-ok",
+   "mncs.lab.session::gen-skip",
+   "mncs.lab.session::gen-stay",
+   "mncs.lab.session::reset-all-observability",
+   "mncs.lab.session::reset-code-artifact",
+   "mncs.lab.session::reset-definitions-proof",
+   "mncs.lab.session::reset-history-runtime",
+   "mncs.lab.session::reset-history-source",
+   "mncs.lab.session::reset-values-jit"
+  ],
+  "disagreements": [],
+  "unknowns": []
+ },
+ "tally": {
+  "supported": 42,
+  "contradicted": 0,
+  "inconclusive": 0,
+  "unknown": 0
+ },
+ "standing": {
+  "value": "SUPPORTED",
+  "code": 0,
+  "witness": {
+   "met": true,
+   "status": "PASS",
+   "corpus_digest": "sha256:063a509b998b3ecd60ebff803c1a54590836a94f065c75931a94882dd9296ca9",
+   "result_digest": "sha256:6a16beede3aa207fd9e66e51e2089c49392316492192d59f5e533735a243b7f4"
+  }
+ },
+ "conclusion": "SUPPORTED iff every executed case agrees across variants with zero unknown; any disagreement -> CONTRADICTED; any variant-level execution gap -> UNKNOWN; integrity-witness failure -> INCONCLUSIVE.",
+ "pressures": [
+  "pressure/registry.md",
+  "pressure/reproducers/select-unknown/README.md"
+ ],
+ "evidence": [
+  "evidence/LAB-EXP-001/observations.json"
+ ],
+ "record_digest": "sha256:20c082b789c55c82adbee9164e1cfc67e2dbb077b2bdaf2df4d690201b07f44f"
+}

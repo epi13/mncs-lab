@@ -1,151 +1,165 @@
 # mncs-lab
 
-Experimental interactive environment for MNCS, focused on REPL design, Cranelift JIT execution, persistent compiler sessions, incremental compilation, proof-aware execution, runtime state, compiler introspection, and other interactive language/compiler experiments.
+Controlled investigations over MNCS behavior, realized as a current MNCS
+application: typed experiment definitions, MNCS-native comparison and
+outcome semantics, Test-proven kernels, canonical execution, digest-pinned
+records, and grounded language/compiler pressure with reproducers.
 
-> **Status:** architecture-first bootstrap. This repository currently defines the laboratory boundary, experimental contracts, initial RFCs, and language/compiler pressure workflow. It does not yet claim a working REPL or JIT runtime.
+> **Status:** realized native slice. Lab defines experiments in JSON,
+> implements their semantics in MNCS (`mncs/lab/`), proves them with
+> `mncs test` suites, executes them through the canonical toolchain,
+> classifies outcomes in MNCS, and persists digest-pinned records
+> (optionally as Store objects). Two backend-comparison experiments are
+> green across portable-WASM, research-bytecode, and Cranelift.
 
 ## Why this exists
 
-Batch compilation is only one way to use a language. MNCS also needs a place to pressure the compiler as a long-lived interactive system: accept fragments, retain semantic state, compile quickly, execute native code, redefine symbols, inspect proof obligations and IR, and recover cleanly from incomplete or invalid input.
-
-`mncs-lab` exists to explore those requirements without prematurely making every experiment a permanent `mncs-compiler` API or language feature.
+Batch compilation is only one way to pressure a language. MNCS also needs
+a place that asks controlled questions — do these backends agree? does
+this hypothesis survive contact with execution? — with exact subjects at
+exact revisions, and that keeps the answer reproducible after the code
+moves on. `mncs-lab` is that place.
 
 The intended relationship is:
 
 ```text
-mncs-language
+question (RAVEL obligation, RFC, or open investigation)
      │
      ▼
-mncs-compiler
-  ├─ parsing / semantics
-  ├─ proof kernel
-  ├─ IR + optimization
-  ├─ backend lowering
-  └─ incremental/session capabilities
-           │
-           ▼
-       mncs-lab
-  ├─ REPL experiments
-  ├─ Cranelift JIT sessions
-  ├─ persistent definitions/state
-  ├─ introspection surfaces
-  ├─ benchmark/profiling probes
-  └─ language/compiler pressure evidence
+mncs-lab experiment definition
+     │  subjects @ exact revisions, controlled variants, corpora
+     ▼
+canonical execution (mncs experiment run / mncs test — Forge/Fabric paths)
+     │
+     ▼
+structured observations -> mncs.lab comparison/outcome semantics
+     │
+     ├─ test propositions evaluated by mncs-test (Lab asserts nothing itself)
+     ├─ records persisted (files + optional Store objects)
+     ├─ Debug receives structured failure evidence
+     └─ gaps persist as pressures with reproducers
 ```
 
-The lab should discover and validate useful compiler capabilities. Stable, generally reusable mechanisms may later graduate into `mncs-compiler`; experimental policy and interaction design should remain here until that boundary is clear.
+## Founding principles (kept from the bootstrap)
 
-## Founding principles
+1. **Experiments are typed records, not scripts plus prose.** The system
+   can reason about what was attempted: hypothesis, subjects, variants,
+   observations, conclusion.
+2. **Hypothesis is not result.** A contradicted hypothesis is preserved
+   evidence, never rewritten history.
+3. **INCONCLUSIVE is not FAIL; UNKNOWN is not PASS.** Incomplete evidence
+   never becomes false certainty in either direction.
+4. **Subjects must be green first.** A comparison subject that fails on
+   its own corpus aborts the run; uniform failure is not agreement.
+5. **Classification executes in MNCS.** Every record carries two MNCS
+   witnesses (variant integrity, standing); disagreement fails the run
+   closed instead of writing the record.
+6. **The REPL is a compiler client, not a second compiler** — and until
+   the compiler owns sessions, Lab ships policy, not a fake session.
+7. **Cranelift is a comparison subject, not canonical semantics.**
+8. **Gaps are recorded, not hidden.** Host code that substitutes for a
+   missing capability is labeled and linked to a pressure entry.
 
-1. **The REPL is a compiler client, not a second compiler.** Parsing, typing, proof checking, IR semantics, and lowering belong to compiler-owned mechanisms.
-2. **Interactive compilation is first-class.** A session is not modeled as repeatedly compiling isolated temporary programs.
-3. **State must be explicit.** Definitions, values, proof state, imports, generated code, and invalidation relationships need observable lifetimes and generations.
-4. **Redefinition must not depend on unsafe code mutation.** New generations should replace bindings through explicit indirection/versioning semantics.
-5. **Proof and introspection are part of the experience.** Interactive execution should make it easy to inspect types, proof obligations, IR, lowering, assembly, dependencies, and compilation costs.
-6. **Cranelift JIT is the first native interactive backend target, not the only possible execution model.** The architecture must not make Cranelift semantics canonical MNCS semantics.
-7. **Experiments must produce evidence.** Successful and failed approaches should leave behind reproducible results rather than only implementation churn.
-8. **Language/compiler gaps are recorded, not hidden.** When MNCS or the compiler cannot express a required interactive behavior safely or efficiently, record the pressure explicitly.
+## Recovered intent and classification
 
-## Initial experimental questions
+Historical Lab (RFCs 0001–0006, `docs/`) set out to be an interactive
+compiler-session laboratory: REPL policy, JIT sessions, generations,
+proof-aware introspection, pressure. Against today's architecture:
 
-- What is the smallest compiler session API capable of supporting a serious REPL?
-- Which semantic state must persist between fragments?
-- How should incomplete fragments differ from invalid programs diagnostically?
-- How should symbol redefinition and dependency invalidation work?
-- How should JIT-generated code reference definitions that may later be replaced?
-- How do values and heap objects outlive the fragment that created them?
-- What proof state is session-scoped versus definition-scoped?
-- Which compiler artifacts should be inspectable (`type`, proof, IR, optimized IR, assembly, dependency graph, timings)?
-- How cheaply can the compiler compile a small change after a large session history?
-- Which capabilities belong permanently in `mncs-compiler`, and which should remain interaction policy in `mncs-lab`?
+- **Enduring, now realized:** experiment discipline
+  (question/hypothesis/setup/criteria/evidence/conclusion), pressure
+  workflow with reproducers, generation discipline and state lifetimes as
+  MNCS policy, interaction-policy-vs-mechanism split, negative-result
+  preservation.
+- **Migrated to canonical owners:** parsing/typing/proof/IR/lowering
+  (compiler, never Lab's), assertion semantics (`mncs-test`), execution
+  orchestration (Forge), persistence authority (Store/Commons), machine
+  telemetry (System Monitor), provenance graph (Lineage).
+- **Retained as specified-but-blocked policy:** the live interactive
+  session. `mncs.lab.session` proves the lifecycle/generation/reset
+  policy in MNCS today; executing it awaits a compiler session API
+  (LAB-PRESS-001). Lab does not fake persistence by recompiling fragments.
+- **Discarded:** general notebook ambitions, remote multi-tenant
+  execution, Cranelift-as-semantics (all explicit non-goals in
+  `docs/architecture.md`).
 
 ## Repository layout
 
 ```text
 .
-├── AGENTS.md
-├── CONTRIBUTING.md
-├── ROADMAP.md
-├── SECURITY.md
-├── docs/
-│   ├── architecture.md
-│   ├── compiler-boundary.md
-│   ├── interactive-surface.md
-│   ├── language-pressure.md
-│   └── session-model.md
-├── rfcs/
-│   ├── README.md
-│   ├── 0001-project-charter-and-boundaries.md
-│   ├── 0002-persistent-interactive-session-model.md
-│   ├── 0003-cranelift-jit-execution.md
-│   ├── 0004-incremental-compilation-and-redefinition.md
-│   ├── 0005-proof-aware-introspection.md
-│   └── 0006-language-and-compiler-pressure-methodology.md
-├── pressure/
-│   ├── README.md
-│   ├── registry.md
-│   └── reproducers/
+├── mncs/lab/                  # MNCS-native semantics (the canonical Lab)
+│   ├── outcome.mncs           # hypothesis-standing algebra
+│   ├── variants.mncs          # controlled-comparison (variant integrity)
+│   └── session.mncs           # interactive-session policy (no live session yet)
+├── tests/lab/                 # mncs test suites proving the kernels (31 tests)
+├── tests/test_lab.py          # host-side record/rule/query tests (10 tests)
+├── corpora/                   # executable kernel corpora (generator-built, drift-gated)
 ├── experiments/
-│   └── README.md
-├── evidence/
-│   └── README.md
-├── src/
-│   └── README.md
-└── tests/
-    └── README.md
+│   ├── definitions/           # typed experiment definitions (revision-pinned)
+│   └── records/               # digest-pinned records + Store sidecars
+├── evidence/                  # compact per-run observation summaries
+├── scripts/                   # lab_run / lab_check / lab_query + builders/fetch
+├── src/mncs_lab/              # host boundary (process/filesystem only, no semantics)
+├── pressure/
+│   ├── registry.md            # grounded entries (LAB-PRESS-001/002/003)
+│   ├── reproducers/           # minimal reproducers per entry
+│   └── commons-drafts/        # exact Commons filing inputs (filed: see registry)
+├── docs/
+│   ├── experiment-model.md    # the canonical pipeline (start here)
+│   ├── TOOLCHAIN.md           # pinned executor + library resolution
+│   ├── architecture.md        # original boundary architecture (still current)
+│   ├── session-model.md       # session vocabulary (realized as mncs.lab.session)
+│   ├── compiler-boundary.md   # the API Lab pressures for (LAB-PRESS-001)
+│   ├── interactive-surface.md # command classes (policy, not implemented surface)
+│   └── language-pressure.md   # pressure categories and grounding rule
+├── rfcs/                      # 0001-0006 starting hypotheses (session half still open)
+└── ROADMAP.md                 # evidence-driven phases with current status
 ```
 
-## RFC map
+## Quick start
 
-| RFC | Topic |
-|---|---|
-| [0001](rfcs/0001-project-charter-and-boundaries.md) | Project charter, scope, and ecosystem boundaries |
-| [0002](rfcs/0002-persistent-interactive-session-model.md) | Persistent interactive compiler/session model |
-| [0003](rfcs/0003-cranelift-jit-execution.md) | Cranelift JIT execution and code lifetime |
-| [0004](rfcs/0004-incremental-compilation-and-redefinition.md) | Incremental fragments, redefinition, generations, and invalidation |
-| [0005](rfcs/0005-proof-aware-introspection.md) | Proof-aware execution and compiler introspection |
-| [0006](rfcs/0006-language-and-compiler-pressure-methodology.md) | Language/compiler pressure evidence and promotion workflow |
+```bash
+# Resolve the toolchain (explicit, digest-verified) or use a sibling checkout.
+python3 scripts/fetch_mncs_executor.py --dest ~/.local/bin/mncs-executor
 
-These RFCs establish starting hypotheses and invariants. Experimental evidence is expected to amend or replace details.
+# Enforcement boundary: corpora sync + native suites + record integrity.
+python3 scripts/lab_check.py
 
-## Language and compiler pressure
+# Execute an experiment definition end to end.
+python3 scripts/lab_run.py experiments/definitions/LAB-EXP-001.json
 
-`mncs-lab` is intentionally a pressure test for both `mncs-language` and `mncs-compiler`.
-
-When a required behavior cannot be expressed safely, efficiently, deterministically, or ergonomically, record it under `pressure/` instead of silently moving semantics into a host-language workaround. Pressure entries should distinguish:
-
-- **language pressure** — syntax, type system, ownership/lifetimes, effects, concurrency, FFI, reflection, runtime, or standard-library deficiency;
-- **compiler pressure** — incremental APIs, symbol management, proof state, dependency invalidation, backend/JIT support, diagnostics, artifact inspection, or performance deficiency;
-- **tooling pressure** — developer workflow, test harness, observability, packaging, or environment limitation.
-
-Speculative risks belong in RFCs or experiment notes. `pressure/registry.md` should contain only grounded findings from attempted work with reproducible evidence.
-
-## Expected interactive surface
-
-The exact syntax is experimental, but the lab should eventually pressure capabilities in this family:
-
-```text
-> let x = 12
-> square(x)
-144
-
-> :type square
-> :proof square
-> :ir square
-> :asm square
-> :deps square
-> :bench square(x)
-> :history square
-> :pressure
+# Query prior work instead of repeating it.
+python3 scripts/lab_query.py list
+python3 scripts/lab_query.py by-subject mncs.lab.variants
+python3 scripts/lab_query.py negatives
 ```
 
-These examples describe desired interaction classes, not implemented commands.
+## Current experiments
 
-## Implementation policy
+| ID | Question | Standing |
+|---|---|---|
+| LAB-EXP-001 | Do portable-WASM and research-bytecode agree on Lab kernels? | SUPPORTED (42/42) |
+| LAB-EXP-002 | Does the Cranelift adapter agree with the WASM baseline? | SUPPORTED (42/42) |
 
-The intended implementation is **MNCS-language first** wherever the language can express the requirement correctly. Cranelift integration and compiler/session mechanisms may initially require work in `mncs-compiler`; do not duplicate compiler semantics inside this repository merely to make a demo work.
+## Pressures
 
-Host-language bootstrap code is acceptable only when clearly bounded, labeled, and backed by a pressure entry if it substitutes for a missing MNCS/compiler capability.
+Repo-local grounded entries in `pressure/registry.md` with reproducers;
+family-wide declarations in the Commons exchange:
+
+- LAB-PRESS-001 → `MNCS-COMPILER-40CF32855108` (blocker, open): no
+  compiler session API; live REPL honestly absent.
+- LAB-PRESS-002 → `MNCS-LANG-BD5D650AC9D8` (major, open): `select()`
+  turns green experiment suites UNKNOWN; Lab kernels use branches.
+- LAB-PRESS-003 (minor, open, repo-local): missing suite import
+  misreported as a module mismatch.
+
+## What host code remains and why
+
+`src/mncs_lab/` and `scripts/` own process/filesystem effects only:
+locating the executor, invoking it, hashing bytes, reading git state,
+writing records, Store publication, bounded queries. Semantics
+(combination order, controlled pairs, lifecycle, classification) live in
+MNCS and are proven by Test; the host never reimplements them.
 
 ## License
 

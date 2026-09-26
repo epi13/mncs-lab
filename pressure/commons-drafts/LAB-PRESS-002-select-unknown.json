@@ -1,0 +1,67 @@
+{
+ "target": "language",
+ "domain": "execution.experiment-contract",
+ "capability": "select-branchless-intent-undischarged",
+ "title": "select() attaches an undischarged machine-intent requirement, turning green experiment suites UNKNOWN",
+ "summary": "Any select() in a function executed via mncs experiment run resolves every case correctly yet reports suite UNKNOWN ('compilation retained required unresolved obligations'): the frontend attaches a realization-branchless machine-intent requirement no backend discharges, and the experiment contract counts it required. mncs.test's own assertions use select pervasively, so the framework idiom and the experiment contract disagree.",
+ "requiredBehavior": "Either supported backends discharge the branchless-select requirement, or the toolchain names select in the unresolved-obligation diagnostic, or the contract documents select as unavailable on the experiment path. Silent all-cases-met UNKNOWN must go.",
+ "reproducer": {
+  "signature": "mncs-lab:LAB-PRESS-002:select-experiment-unknown",
+  "text": "Two kernels with identical semantics over identical corpus shapes: select variant UNKNOWN, branch variant PASS. See mncs-lab pressure/reproducers/select-unknown/."
+ },
+ "severity": "major",
+ "discoveredBy": "mncs-lab",
+ "discoveredAt": "2026-09-26T05:47:50Z",
+ "legacyIds": [
+  "mncs-lab:LAB-PRESS-002"
+ ],
+ "affectedRepositories": [
+  "mncs-language",
+  "mncs-lab"
+ ],
+ "languageProfile": "0.18",
+ "sourceRef": {
+  "kind": "repository-path",
+  "repository": "mncs-lab",
+  "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+  "path": "pressure/reproducers/select-unknown/"
+ },
+ "observation": {
+  "repository": "mncs-lab",
+  "observedAt": "2026-09-26T05:47:50Z",
+  "languageProfile": "0.18",
+  "compiler": {
+   "revision": "066897e97a8499a25ea33611d47cc7a4fcdc2b48",
+   "binary": "target/release/mncs"
+  },
+  "summary": "Minimal select/branch pair reproduces the UNKNOWN at mncs-language 066897e on portable-WASM.",
+  "reproduction": {
+   "status": "FAIL",
+   "instructions": "Run both reproducer kernels via mncs experiment run; select variant is UNKNOWN with all cases met, branch variant PASS."
+  },
+  "evidence": [
+   {
+    "id": "mncs-lab:select-unknown:select-variant",
+    "status": "FAIL",
+    "summary": "select kernel: 2/2 cases met, suite UNKNOWN, machine-intent obligations retained.",
+    "reference": "mncs-lab@a6aa2b8:pressure/reproducers/select-unknown/"
+   },
+   {
+    "id": "mncs-lab:select-unknown:branch-control",
+    "status": "PASS",
+    "summary": "branch kernel: 2/2 cases met, suite PASS, no obligations.",
+    "reference": "mncs-lab@a6aa2b8:pressure/reproducers/select-unknown/"
+   },
+   {
+    "id": "mncs-lab:select-unknown:lab-workaround",
+    "status": "PASS",
+    "summary": "mncs.lab.variants uses a plain-branch helper; lab-variant corpus PASS on wasm+bytecode (LAB-EXP-001).",
+    "reference": "mncs-lab@a6aa2b8:experiments/records/LAB-EXP-001.json"
+   }
+  ],
+  "workaround": {
+   "removed": false,
+   "description": "Lab kernels avoid select() on experiment-run paths (labeled use-site comment). mncs test paths still use select via mncs.test.assertions."
+  }
+ }
+}

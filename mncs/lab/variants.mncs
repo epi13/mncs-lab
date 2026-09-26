@@ -1,0 +1,71 @@
+mncs 0.18;
+
+// mncs.lab.variants — controlled-comparison semantics for Lab experiments.
+//
+// A comparison answers what differed, what remained controlled, and whether
+// the difference is meaningful. A variant is a vector of opaque dimension
+// codes (backend, revision, input profile, ...); the meaning of each code
+// lives in the experiment definition, not here. This module proves only the
+// structural claim: exactly the intended dimension differs between two
+// variants, and how many dimensions differ overall.
+//
+// Dimension width is fixed at four by the monomorphic corpus envelopes
+// (diff4/controlled4); the generic fold underneath covers any width the
+// language can express. Widen only with a genuine multi-dimension
+// experiment, not speculatively.
+module mncs.lab.variants;
+
+// Authoritative generic fold over two [u64; N] vectors. Returns the count
+// of positions whose codes differ.
+fn bump_on_difference(acc: u64, same: bool) -> (result: u64) {
+    // Plain branch, not select(): the branchless-selection idiom attaches a
+    // realization-branchless machine-intent requirement that the experiment
+    // contract counts as required-but-unresolved (see LAB-PRESS-002).
+    // Wrapping add is deliberate: a dimension count is not a resource bound.
+    if same {
+        return acc;
+    }
+    return acc +% 1;
+}
+
+fn diff_all<N: Nat>(left: [u64; N], right: [u64; N]) -> (result: u64) {
+    iterate i over left carrying acc: u64 = 0 {
+        next acc = bump_on_difference(acc, left[i] == right[i]);
+    }
+    return acc;
+}
+
+// Monomorphic envelope: the corpus boundary transports scalars, so the
+// four dimension codes per variant arrive flat and are folded here.
+fn diff4(a0: u64, a1: u64, a2: u64, a3: u64, b0: u64, b1: u64, b2: u64, b3: u64) -> (result: u64) {
+    let left: [u64; 4] = [a0, a1, a2, a3];
+    let right: [u64; 4] = [b0, b1, b2, b3];
+    return diff_all<4>(left, right);
+}
+
+// A controlled pair differs in exactly one dimension, and that dimension
+// is the intended one. Unused dimension slots must agree between the two
+// variants; no absent slot is silently treated as controlled.
+fn controlled4(
+    intended: u64,
+    a0: u64, a1: u64, a2: u64, a3: u64,
+    b0: u64, b1: u64, b2: u64, b3: u64
+) -> (result: bool) {
+    let differing: u64 = diff4(a0, a1, a2, a3, b0, b1, b2, b3);
+    if differing != 1 {
+        return false;
+    }
+    if intended == 0 {
+        return a0 != b0;
+    }
+    if intended == 1 {
+        return a1 != b1;
+    }
+    if intended == 2 {
+        return a2 != b2;
+    }
+    if intended == 3 {
+        return a3 != b3;
+    }
+    return false;
+}

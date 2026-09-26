@@ -1,0 +1,6 @@
+mncs 0.18;
+module lab.nosuite;
+use mncs.test.assertions;
+test nosuite_adds() -> (result: TestResult) {
+    return from_assertion(equals_i64(4, 2 +% 2, 9002));
+}

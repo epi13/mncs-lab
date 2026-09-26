@@ -1,0 +1,90 @@
+mncs 0.18;
+
+// Proofs of the mncs.lab.outcome standing algebra. Every law that the host
+// runner relies on (identity, domination, associativity, the classify
+// table, vacuous-unknown) is asserted here so a broken lattice fails in
+// Test, not silently in an experiment record.
+module tests.lab.outcome_tests;
+
+use mncs.lab.outcome;
+use mncs.test.assertions;
+use mncs.test.suite;
+
+// The corpus/ABI boundary carries u64 codes; equals_i64 asserts i64, so
+// tests convert at the edge. The conversion is test glue, not semantics.
+fn scode(standing: Standing) -> (result: i64) {
+    return standing_code(standing) as i64;
+}
+
+test codes_are_stable() -> (result: TestResult) {
+    return from_assertion(equals_i64(0, scode(Standing.SUPPORTED), 9101));
+}
+
+test codes_are_distinct() -> (result: TestResult) {
+    let distinct: bool = standing_code(Standing.CONTRADICTED) != standing_code(Standing.INCONCLUSIVE);
+    let distinct2: bool = distinct && standing_code(Standing.INCONCLUSIVE) != standing_code(Standing.UNKNOWN);
+    return from_assertion(equals_bool(true, distinct2, 9102));
+}
+
+test support_is_identity() -> (result: TestResult) {
+    let a: bool = scode(combine(Standing.SUPPORTED, Standing.CONTRADICTED)) == 1;
+    let b: bool = a && scode(combine(Standing.SUPPORTED, Standing.INCONCLUSIVE)) == 2;
+    let c: bool = b && scode(combine(Standing.SUPPORTED, Standing.UNKNOWN)) == 3;
+    let d: bool = c && scode(combine(Standing.SUPPORTED, Standing.SUPPORTED)) == 0;
+    return from_assertion(equals_bool(true, d, 9103));
+}
+
+test contradiction_dominates() -> (result: TestResult) {
+    let a: bool = scode(combine(Standing.SUPPORTED, Standing.CONTRADICTED)) == 1;
+    let b: bool = a && scode(combine(Standing.INCONCLUSIVE, Standing.CONTRADICTED)) == 1;
+    let c: bool = b && scode(combine(Standing.UNKNOWN, Standing.CONTRADICTED)) == 1;
+    let d: bool = c && scode(combine(Standing.CONTRADICTED, Standing.SUPPORTED)) == 1;
+    return from_assertion(equals_bool(true, d, 9104));
+}
+
+test contradiction_is_never_dropped() -> (result: TestResult) {
+    // The negative-result guarantee: supporting evidence beside a
+    // contradiction still records CONTRADICTED, never SUPPORTED.
+    let folded: Standing = combine(combine(Standing.SUPPORTED, Standing.SUPPORTED), Standing.CONTRADICTED);
+    return from_assertion(equals_i64(1, scode(folded), 9105));
+}
+
+test combine_is_commutative_spot() -> (result: TestResult) {
+    let fwd: i64 = scode(combine(Standing.INCONCLUSIVE, Standing.UNKNOWN));
+    let rev: i64 = scode(combine(Standing.UNKNOWN, Standing.INCONCLUSIVE));
+    let same: bool = fwd == rev;
+    return from_assertion(equals_bool(true, same && fwd == 2, 9106));
+}
+
+test combine_is_associative_spot() -> (result: TestResult) {
+    let left: i64 = scode(combine(combine(Standing.SUPPORTED, Standing.INCONCLUSIVE), Standing.UNKNOWN));
+    let right: i64 = scode(combine(Standing.SUPPORTED, combine(Standing.INCONCLUSIVE, Standing.UNKNOWN)));
+    return from_assertion(equals_bool(true, left == right && left == 2, 9107));
+}
+
+test classify_table() -> (result: TestResult) {
+    let a: bool = scode(classify(3, 0, 0, 0)) == 0;
+    let b: bool = a && scode(classify(0, 0, 0, 0)) == 3;
+    let c: bool = b && scode(classify(2, 0, 0, 1)) == 3;
+    let d: bool = c && scode(classify(2, 0, 1, 1)) == 2;
+    let e: bool = d && scode(classify(1, 1, 1, 1)) == 1;
+    let f: bool = e && scode(classify(0, 0, 5, 0)) == 2;
+    return from_assertion(equals_bool(true, f, 9108));
+}
+
+test vacuous_tally_is_unknown() -> (result: TestResult) {
+    // Zero observations is UNKNOWN, never vacuous SUPPORTED.
+    return from_assertion(equals_i64(3, scode(classify(0, 0, 0, 0)), 9109));
+}
+
+test inconclusive_is_not_failure() -> (result: TestResult) {
+    let decided: bool = is_decided(Standing.INCONCLUSIVE);
+    let contradicted_decided: bool = is_decided(Standing.CONTRADICTED);
+    return from_assertion(equals_bool(true, decided == false && contradicted_decided, 9110));
+}
+
+test decided_covers_support_and_contradiction() -> (result: TestResult) {
+    let a: bool = is_decided(Standing.SUPPORTED) && is_decided(Standing.CONTRADICTED);
+    let b: bool = a && is_decided(Standing.UNKNOWN) == false;
+    return from_assertion(equals_bool(true, b, 9111));
+}

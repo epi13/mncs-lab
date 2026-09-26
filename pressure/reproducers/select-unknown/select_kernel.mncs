@@ -1,0 +1,6 @@
+mncs 0.18;
+// Reproducer for LAB-PRESS-002: one `select` in the executed function.
+module lab.select_probe;
+fn pick(flag: bool) -> (result: u64) {
+    return select(flag, 1, 0);
+}

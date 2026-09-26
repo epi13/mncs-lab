@@ -1,0 +1,10 @@
+{
+ "record": "LAB-EXP-002",
+ "record_digest": "sha256:e8d5f26e30c813142a449c0c2c7af3c601202263f3cee2ef544033e47f8e2807",
+ "store": "/home/epi13/.local/share/mncs-lab/store",
+ "generation": 2,
+ "logical_id": "0e22cdba7550fffb29e7fcb1",
+ "content_id": "00a53df499342955d5f9dd42692b89c8e66ea31a49110b0b320c5411ae807b63",
+ "binding_id": "af038610c63e4fc965373a401d2c4614c23afd532d61f13677760cf2ca8248bc",
+ "commit_code": "COMMITTED"
+}

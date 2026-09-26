@@ -1,0 +1,588 @@
+{
+ "schema_version": "0.1",
+ "name": "lab-session",
+ "cases": [
+  {
+   "id": "frag-incomplete",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "classify_fragment"
+    },
+    "arguments": [
+     {
+      "boolean": {
+       "value": false
+      }
+     },
+     {
+      "boolean": {
+       "value": false
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::INCOMPLETE",
+      "discriminant": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "frag-incomplete-valid",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "classify_fragment"
+    },
+    "arguments": [
+     {
+      "boolean": {
+       "value": false
+      }
+     },
+     {
+      "boolean": {
+       "value": true
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::INCOMPLETE",
+      "discriminant": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "frag-invalid",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "classify_fragment"
+    },
+    "arguments": [
+     {
+      "boolean": {
+       "value": true
+      }
+     },
+     {
+      "boolean": {
+       "value": false
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::INVALID",
+      "discriminant": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "frag-valid",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "classify_fragment"
+    },
+    "arguments": [
+     {
+      "boolean": {
+       "value": true
+      }
+     },
+     {
+      "boolean": {
+       "value": true
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::VALID",
+      "discriminant": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "disp-reject-incomplete",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "dispose"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::INCOMPLETE",
+       "discriminant": 0
+      }
+     },
+     {
+      "boolean": {
+       "value": false
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Disposition",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Disposition::REJECT",
+      "discriminant": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "disp-reject-invalid",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "dispose"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::INVALID",
+       "discriminant": 1
+      }
+     },
+     {
+      "boolean": {
+       "value": true
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Disposition",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Disposition::REJECT",
+      "discriminant": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "disp-inspect",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "dispose"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::VALID",
+       "discriminant": 2
+      }
+     },
+     {
+      "boolean": {
+       "value": true
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Disposition",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Disposition::INSPECT_ONLY",
+      "discriminant": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "disp-commit",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "dispose"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Submission",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Submission::VALID",
+       "discriminant": 2
+      }
+     },
+     {
+      "boolean": {
+       "value": false
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.session::Disposition",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::Disposition::COMMIT",
+      "discriminant": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "gen-ok",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "generation_ok"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 5,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 6,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "gen-stay",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "generation_ok"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 5,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 5,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "gen-skip",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "generation_ok"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 5,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 7,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "reset-history-source",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "reset_clears"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::ResetScope",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::ResetScope::HISTORY",
+       "discriminant": 0
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::StateClass",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::StateClass::SOURCE",
+       "discriminant": 0
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "reset-history-runtime",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "reset_clears"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::ResetScope",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::ResetScope::HISTORY",
+       "discriminant": 0
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::StateClass",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::StateClass::RUNTIME",
+       "discriminant": 4
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "reset-definitions-proof",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "reset_clears"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::ResetScope",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::ResetScope::DEFINITIONS",
+       "discriminant": 1
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::StateClass",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::StateClass::PROOF",
+       "discriminant": 2
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "reset-code-artifact",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "reset_clears"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::ResetScope",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::ResetScope::CODE",
+       "discriminant": 3
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::StateClass",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::StateClass::ARTIFACT",
+       "discriminant": 3
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "reset-all-observability",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "reset_clears"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::ResetScope",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::ResetScope::ALL",
+       "discriminant": 4
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::StateClass",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::StateClass::OBSERVABILITY",
+       "discriminant": 6
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "reset-values-jit",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.session",
+     "function": "reset_clears"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::ResetScope",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::ResetScope::VALUES",
+       "discriminant": 2
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.session::StateClass",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.session::StateClass::JIT",
+       "discriminant": 5
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": false
+     }
+    }
+   ]
+  }
+ ]
+}

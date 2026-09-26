@@ -1,61 +1,68 @@
 # Roadmap
 
-The roadmap is intentionally evidence-driven. Later phases should change when experiments invalidate early assumptions.
+Evidence-driven as before; this revision records what the native
+realization campaign established and what remains genuinely blocked.
 
 ## Phase 0 — Foundation
 
-- establish project boundaries and RFC discipline;
-- define persistent session vocabulary;
-- define pressure/evidence workflow;
-- identify the minimum compiler capabilities required for the first executable experiment.
+Done (bootstrap commit): boundaries, RFCs, session vocabulary,
+pressure/evidence workflow, minimum compiler capabilities identified.
 
-## Phase 1 — Minimal interactive execution
+## Phase 1 — Minimal interactive execution (RESOLVED AS POLICY, BLOCKED AS MACHINERY)
 
-- accept a complete expression or definition fragment;
-- compile through `mncs-compiler` rather than duplicating semantics;
-- lower a supported subset through Cranelift JIT;
-- execute and return a result;
-- expose structured diagnostics and compilation timing.
+The Lab can accept, classify, and dispose fragments — as MNCS decision
+logic (`mncs.lab.session`, proven by 11 native tests). It cannot execute
+an interactive session because no compiler session API exists
+(LAB-PRESS-001). Deliberately not faked: a host loop over batch
+compilation would violate the compiler boundary. This phase reopens when
+the compiler owns sessions; the policy it must satisfy is already written
+and proven.
 
-Success means native interactive execution works for a deliberately small subset with an explicit boundary, not that the full language is supported.
+## Phase 2 — Persistent sessions (BLOCKED, specified)
 
-## Phase 2 — Persistent sessions
+Generations, value/type lifetimes, reset taxonomy: specified in
+`mncs.lab.session` + `docs/session-model.md`. Executable once Phase 1's
+machinery lands.
 
-- retain definitions and typed session metadata;
-- support values whose lifetime extends across submissions;
-- model imports/session namespaces;
-- distinguish incomplete input from invalid input;
-- define deterministic reset/drop behavior.
+## Phase 3 — Redefinition and invalidation (BLOCKED, specified)
 
-## Phase 3 — Redefinition and invalidation
+Generation discipline (`generation_ok`: successor-only, no skips/replays)
+is specified and proven. Dependent invalidation awaits compiler machinery.
 
-- version definitions by generation;
-- route replaceable calls through explicit bindings/dispatch;
-- invalidate dependent compiler artifacts safely;
-- retain or reject old values according to explicit type/layout lifetime rules;
-- add history and restore experiments where sound.
+## Phase 4 — Proof-aware introspection (OPEN)
 
-## Phase 4 — Proof-aware introspection
+Unstarted as Lab surface. Introspection commands (`:type`, `:proof`,
+`:ir`, ...) remain policy classes in `docs/interactive-surface.md`, not
+implemented commands. No shadow compiler will be built to fake them.
 
-- inspect inferred/declared types;
-- expose proof obligations and proof status;
-- inspect IR before/after optimization;
-- inspect backend lowering/assembly;
-- inspect dependency and invalidation graphs;
-- expose compilation and execution measurements.
+## Phase 5 — REPL ergonomics (OPEN, behind Phase 1)
 
-## Phase 5 — Serious REPL ergonomics
+Multiline handling, history UX, completion hooks, benchmark display, error
+recovery: design stays in RFCs until sessions execute.
 
-- multiline/incomplete fragment handling;
-- history and session persistence experiments;
-- structured completion/introspection hooks;
-- benchmark/profile commands;
-- error recovery that preserves unaffected session state.
+## Phase 6 — Compiler-service integration (OPEN)
 
-## Phase 6 — Compiler-service integration
+Evaluate shared incremental capabilities once a session API exists to
+share.
 
-Evaluate whether the mature session API should be local-only, embedded, or usable through the broader compiler-service architecture so REPLs, IDEs, agents, tests, and other tools can share incremental compiler capabilities.
+## Realized instead: native experiment layer (DONE)
 
-## Continuous objective — Pressure MNCS
+Not on the original roadmap, now the Lab's core: typed definitions,
+MNCS comparison/outcome semantics, Test proofs, canonical execution,
+digest-pinned records, Store publication, bounded queries, pressure
+generation. LAB-EXP-001/002 green across three backends.
 
-Every phase should identify language/compiler limitations with minimal reproducers and evidence. Do not let host workarounds make missing capabilities invisible.
+## Near-term follow-ups (no v2, same architecture)
+
+- Forge Provider-Protocol speaker for `lab_run` definitions (Forge owns
+  orchestration; Lab needs a declared provider voice, not its own).
+- Cross-record relations via Lineage once experiment bindings exist in
+  the provenance graph (records already carry exact digests).
+- Session machinery the moment LAB-PRESS-001 moves; policy is ready.
+- Retire `select()` workaround in kernels when LAB-PRESS-002 resolves
+  (use-site labeled; Commons record filed).
+
+## Continuous objective — Pressure MNCS (ACTIVE)
+
+LAB-PRESS-001 (blocker), LAB-PRESS-002 (major), LAB-PRESS-003 (minor)
+filed this campaign with reproducers; 001/002 escalated to Commons.

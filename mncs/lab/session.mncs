@@ -1,0 +1,141 @@
+mncs 0.18;
+
+// mncs.lab.session — interactive-session policy as MNCS decision logic.
+//
+// This module is policy, not machinery. It encodes docs/session-model.md as
+// executable classification: fragment lifecycle, commit disposition,
+// generation ordering, and reset scope. It does not compile fragments, hold
+// definitions, or execute code — there is deliberately no compiler session
+// behind it (see LAB-PRESS-001). What it proves, via tests/lab/session_tests,
+// is that the policy the lab pressures for is itself coherent: submissions
+// are classified before anything commits, generations only move forward,
+// and no single opaque reset hides materially different clearing behavior.
+//
+// Once mncs-compiler exposes a real incremental session API, this policy is
+// what the lab will drive it with. Until then it is a specification with
+// proofs, not a fake session.
+module mncs.lab.session;
+
+// A submission is not automatically a generation. Incomplete input requests
+// continuation; invalid input yields diagnostics; only a valid fragment is
+// a commit candidate.
+enum Submission { INCOMPLETE, INVALID, VALID }
+
+// What the session does with one submission.
+enum Disposition { COMMIT, INSPECT_ONLY, REJECT }
+
+// The five materially different clears. There is no opaque `reset`.
+enum ResetScope { HISTORY, DEFINITIONS, VALUES, CODE, ALL }
+
+// The seven state classes from docs/architecture.md. Lifetimes and
+// invalidation rules differ per class, so reset scope is decided per class.
+enum StateClass { SOURCE, SEMANTIC, PROOF, ARTIFACT, RUNTIME, JIT, OBSERVABILITY }
+
+fn submission_code(submission: Submission) -> (result: u64) {
+    return match submission {
+        INCOMPLETE => 0,
+        INVALID => 1,
+        VALID => 2,
+    };
+}
+
+fn disposition_code(disposition: Disposition) -> (result: u64) {
+    return match disposition {
+        COMMIT => 0,
+        INSPECT_ONLY => 1,
+        REJECT => 2,
+    };
+}
+
+// Completeness is checked before validity: an incomplete fragment can
+// never be INVALID, and neither state commits anything.
+fn classify_fragment(complete: bool, valid: bool) -> (result: Submission) {
+    if complete {
+        if valid {
+            return Submission.VALID;
+        }
+        return Submission.INVALID;
+    }
+    return Submission.INCOMPLETE;
+}
+
+// Only a valid fragment inspected without commit intent stays out of the
+// generation order. Everything else either commits or is rejected.
+fn dispose(submission: Submission, inspect_only: bool) -> (result: Disposition) {
+    return match submission {
+        INCOMPLETE => Disposition.REJECT,
+        INVALID => Disposition.REJECT,
+        VALID => select_disposition(inspect_only),
+    };
+}
+
+fn select_disposition(inspect_only: bool) -> (result: Disposition) {
+    if inspect_only {
+        return Disposition.INSPECT_ONLY;
+    }
+    return Disposition.COMMIT;
+}
+
+// Generations are monotonically ordered logical worlds. A candidate is
+// admissible exactly when it is the immediate successor: no skips, no
+// replays, no stays. (Wrapping add is deliberate: u64::MAX has no
+// successor, so nothing can commit past it.)
+fn generation_ok(prior: u64, candidate: u64) -> (result: bool) {
+    return candidate == prior +% 1;
+}
+
+// Reset matrix. HISTORY clears source/command history only. DEFINITIONS
+// clears semantic definitions plus the proof obligations and compiler
+// artifacts tied to them. VALUES drops runtime values and resources. CODE
+// retires JIT generations. OBSERVABILITY (timings, evidence references)
+// survives every scoped clear and is dropped only by ALL: evidence must
+// outlive the session state it describes.
+fn reset_clears(scope: ResetScope, state: StateClass) -> (result: bool) {
+    return match scope {
+        HISTORY => match state {
+            SOURCE => true,
+            SEMANTIC => false,
+            PROOF => false,
+            ARTIFACT => false,
+            RUNTIME => false,
+            JIT => false,
+            OBSERVABILITY => false,
+        },
+        DEFINITIONS => match state {
+            SOURCE => false,
+            SEMANTIC => true,
+            PROOF => true,
+            ARTIFACT => true,
+            RUNTIME => false,
+            JIT => false,
+            OBSERVABILITY => false,
+        },
+        VALUES => match state {
+            SOURCE => false,
+            SEMANTIC => false,
+            PROOF => false,
+            ARTIFACT => false,
+            RUNTIME => true,
+            JIT => false,
+            OBSERVABILITY => false,
+        },
+        CODE => match state {
+            SOURCE => false,
+            SEMANTIC => false,
+            PROOF => false,
+            ARTIFACT => false,
+            RUNTIME => false,
+            JIT => true,
+            OBSERVABILITY => false,
+        },
+        ALL => match state {
+            SOURCE => true,
+            SEMANTIC => true,
+            PROOF => true,
+            ARTIFACT => true,
+            RUNTIME => true,
+            JIT => true,
+            OBSERVABILITY => true,
+        },
+    };
+}
