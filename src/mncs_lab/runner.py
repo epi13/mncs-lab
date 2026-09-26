@@ -135,6 +135,7 @@ def finite_arg(module: str, enum: str, variant: str, discriminant: int) -> dict:
 
 def run_witness(executor: str, source: Path, backend: str, corpus_doc: dict,
                 workdir: Path) -> dict:
+    workdir.mkdir(parents=True, exist_ok=True)
     corpus_file = workdir / "witness-corpus.json"
     corpus_file.write_text(json.dumps(corpus_doc, indent=1), encoding="utf-8")
     out = workdir / "witness-out"
