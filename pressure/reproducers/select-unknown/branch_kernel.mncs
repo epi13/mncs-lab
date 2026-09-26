@@ -1,0 +1,9 @@
+mncs 0.18;
+// Control for LAB-PRESS-002: identical semantics, plain branch.
+module lab.branch_probe;
+fn pick(flag: bool) -> (result: u64) {
+    if flag {
+        return 1;
+    }
+    return 0;
+}

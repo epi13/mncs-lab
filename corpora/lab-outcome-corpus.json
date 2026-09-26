@@ -1,0 +1,690 @@
+{
+ "schema_version": "0.1",
+ "name": "lab-outcome",
+ "cases": [
+  {
+   "id": "comb-ss",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "combine"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+      "discriminant": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "comb-sc",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "combine"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::CONTRADICTED",
+       "discriminant": 1
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::CONTRADICTED",
+      "discriminant": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "comb-cs",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "combine"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::CONTRADICTED",
+       "discriminant": 1
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::CONTRADICTED",
+      "discriminant": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "comb-iu",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "combine"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+       "discriminant": 2
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+       "discriminant": 3
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+      "discriminant": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "comb-uu",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "combine"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+       "discriminant": 3
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+       "discriminant": 3
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+      "discriminant": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "comb-is",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "combine"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+       "discriminant": 2
+      }
+     },
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+      "discriminant": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "cls-support",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "classify"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 3,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+      "discriminant": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "cls-vacuous",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "classify"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+      "discriminant": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "cls-contra",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "classify"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 1,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 1,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 1,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 1,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::CONTRADICTED",
+      "discriminant": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "cls-inconclusive",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "classify"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 2,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 2,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 3,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+      "discriminant": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "cls-unknown",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "classify"
+    },
+    "arguments": [
+     {
+      "integer": {
+       "value": 2,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 0,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     },
+     {
+      "integer": {
+       "value": 1,
+       "type": {
+        "bits": 64,
+        "signed": false
+       }
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "finite": {
+      "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+      "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+      "discriminant": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "code-s",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "standing_code"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "integer": {
+      "value": 0,
+      "type": {
+       "bits": 64,
+       "signed": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "code-c",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "standing_code"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::CONTRADICTED",
+       "discriminant": 1
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "integer": {
+      "value": 1,
+      "type": {
+       "bits": 64,
+       "signed": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "code-i",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "standing_code"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+       "discriminant": 2
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "integer": {
+      "value": 2,
+      "type": {
+       "bits": 64,
+       "signed": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "code-u",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "standing_code"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::UNKNOWN",
+       "discriminant": 3
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "integer": {
+      "value": 3,
+      "type": {
+       "bits": 64,
+       "signed": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "decided-s",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "is_decided"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::SUPPORTED",
+       "discriminant": 0
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "decided-i",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.lab.outcome",
+     "function": "is_decided"
+    },
+    "arguments": [
+     {
+      "finite": {
+       "type_identity": "mncs:0.2:finite-type:mncs.lab.outcome::Standing",
+       "variant_identity": "mncs:0.2:finite-variant:mncs.lab.outcome::Standing::INCONCLUSIVE",
+       "discriminant": 2
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "boolean": {
+      "value": false
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -13,3 +13,7 @@ target/
 
 # Local session state
 .mncs-lab/
+
+# Python caches
+__pycache__/
+*.pyc

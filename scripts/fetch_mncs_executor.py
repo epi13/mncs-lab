@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Fetch the pinned MNCS executor binary with digest verification.
+
+Downloads the release asset named in docs/TOOLCHAIN.md (published from
+mncs-harness; Lab consumes the family's pinned distribution rather than
+publishing a second executor binary), verifies its SHA-256 digest BEFORE
+marking it executable, and writes it to --dest (default:
+~/.local/bin/mncs-executor). Fails closed on any mismatch.
+
+This is an explicit operator/CI action. The Lab runner/checker
+(mncs_lab.find_executor) never downloads; they only resolve a local
+binary or raise.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import os
+import stat
+import sys
+import tempfile
+import urllib.request
+from pathlib import Path
+
+REPO = "epi13/mncs-harness"
+TAG = "toolchain/mncs-executor-066897e"
+ASSET = "mncs-executor-linux-x86_64"
+DIGEST = "4387bae352b68020a83edbbb312794522a76c9f618cc7548a8f68384c63ecb40"
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--dest",
+        default=str(Path.home() / ".local" / "bin" / "mncs-executor"),
+        help="destination path for the verified executor binary",
+    )
+    parser.add_argument(
+        "--digest",
+        default=DIGEST,
+        help="expected SHA-256 digest (must match docs/TOOLCHAIN.md to change)",
+    )
+    args = parser.parse_args()
+
+    url = f"https://github.com/{REPO}/releases/download/{TAG}/{ASSET}"
+    print(f"downloading {url}")
+    try:
+        with urllib.request.urlopen(url, timeout=300) as response:
+            data = response.read()
+    except OSError as exc:
+        print(f"download failed: {exc}", file=sys.stderr)
+        raise SystemExit(1)
+    digest = hashlib.sha256(data).hexdigest()
+    if digest != args.digest:
+        print(
+            f"DIGEST MISMATCH: got sha256:{digest}, want sha256:{args.digest}; refusing",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    dest = Path(os.path.expanduser(args.dest))
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=str(dest.parent), delete=False) as staged:
+        staged.write(data)
+        staged_path = Path(staged.name)
+    staged_path.chmod(staged_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    staged_path.rename(dest)
+    print(f"verified sha256:{digest} -> {dest}")
+
+
+if __name__ == "__main__":
+    main()

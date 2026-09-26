@@ -1,0 +1,7 @@
+mncs 0.18;
+module lab.withsuite;
+use mncs.test.assertions;
+use mncs.test.suite;
+test withsuite_adds() -> (result: TestResult) {
+    return from_assertion(equals_i64(4, 2 +% 2, 9002));
+}

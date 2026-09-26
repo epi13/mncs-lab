@@ -1,0 +1,64 @@
+{
+ "schema_version": "0.1",
+ "name": "lab-select-probe",
+ "cases": [
+  {
+   "id": "pick-true",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "lab.select_probe",
+     "function": "pick"
+    },
+    "arguments": [
+     {
+      "boolean": {
+       "value": true
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "integer": {
+      "value": 1,
+      "type": {
+       "bits": 64,
+       "signed": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "pick-false",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "lab.select_probe",
+     "function": "pick"
+    },
+    "arguments": [
+     {
+      "boolean": {
+       "value": false
+      }
+     }
+    ],
+    "step_budget": 1024
+   },
+   "expected": [
+    {
+     "integer": {
+      "value": 0,
+      "type": {
+       "bits": 64,
+       "signed": false
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

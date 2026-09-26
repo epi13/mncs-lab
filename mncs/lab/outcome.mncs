@@ -1,0 +1,83 @@
+mncs 0.18;
+
+// mncs.lab.outcome — hypothesis-standing algebra for Lab experiments.
+//
+// An experiment asks something; a test checks something. This module owns
+// the experiment side of that distinction: what was hypothesized, what was
+// observed across variants, and what may be concluded. It never asserts,
+// never prints, never touches host state. Test declarations elsewhere
+// (tests/lab/outcome_tests.mncs) prove the laws stated here.
+//
+// Standing order (weakest claim wins):
+//   CONTRADICTED dominates INCONCLUSIVE dominates UNKNOWN dominates SUPPORTED.
+// A single contradiction sinks support; an incomplete execution is UNKNOWN,
+// never support; an inconclusive run is evidence of inconclusiveness, never
+// failure. In particular INCONCLUSIVE is not FAIL and UNKNOWN is not PASS.
+//
+// The process boundary does not expose enum variant spellings, so every
+// standing carries a stable numeric code beside the typed value (the same
+// protocol mncs.test.assertions uses for Verdict).
+module mncs.lab.outcome;
+
+enum Standing { SUPPORTED, CONTRADICTED, INCONCLUSIVE, UNKNOWN }
+
+fn standing_code(standing: Standing) -> (result: u64) {
+    return match standing {
+        SUPPORTED => 0,
+        CONTRADICTED => 1,
+        INCONCLUSIVE => 2,
+        UNKNOWN => 3,
+    };
+}
+
+fn is_decided(standing: Standing) -> (result: bool) {
+    return match standing {
+        SUPPORTED => true,
+        CONTRADICTED => true,
+        INCONCLUSIVE => false,
+        UNKNOWN => false,
+    };
+}
+
+// Pairwise combination. Associative, commutative, with SUPPORTED as
+// identity and CONTRADICTED as the absorbing element. Combination can only
+// weaken a claim: no operand order maps UNKNOWN to SUPPORTED or deletes a
+// contradiction.
+fn combine(left: Standing, right: Standing) -> (result: Standing) {
+    return match left {
+        SUPPORTED => right,
+        CONTRADICTED => Standing.CONTRADICTED,
+        INCONCLUSIVE => match right {
+            SUPPORTED => Standing.INCONCLUSIVE,
+            CONTRADICTED => Standing.CONTRADICTED,
+            INCONCLUSIVE => Standing.INCONCLUSIVE,
+            UNKNOWN => Standing.INCONCLUSIVE,
+        },
+        UNKNOWN => match right {
+            SUPPORTED => Standing.UNKNOWN,
+            CONTRADICTED => Standing.CONTRADICTED,
+            INCONCLUSIVE => Standing.INCONCLUSIVE,
+            UNKNOWN => Standing.UNKNOWN,
+        },
+    };
+}
+
+// Classify one observation tally. Counts arrive as plain integers because
+// the corpus boundary only transports scalars; the combination order lives
+// here, not in the host runner. Zero observations is UNKNOWN (no evidence),
+// never vacuous SUPPORTED: no missing tally is silently interpreted.
+fn classify(supported: u64, contradicted: u64, inconclusive: u64, unknown: u64) -> (result: Standing) {
+    if contradicted > 0 {
+        return Standing.CONTRADICTED;
+    }
+    if inconclusive > 0 {
+        return Standing.INCONCLUSIVE;
+    }
+    if unknown > 0 {
+        return Standing.UNKNOWN;
+    }
+    if supported > 0 {
+        return Standing.SUPPORTED;
+    }
+    return Standing.UNKNOWN;
+}

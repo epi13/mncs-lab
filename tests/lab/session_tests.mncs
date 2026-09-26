@@ -1,0 +1,102 @@
+mncs 0.18;
+
+// Proofs of the mncs.lab.session interaction policy. These tests pin the
+// fragment lifecycle truth table, the commit disposition paths, generation
+// monotonicity (no skips, no replays, no stays), and the reset matrix —
+// including that observability survives every scoped clear and that no
+// scoped clear touches unrelated state.
+module tests.lab.session_tests;
+
+use mncs.lab.session;
+use mncs.test.assertions;
+use mncs.test.suite;
+
+fn subcode(submission: Submission) -> (result: i64) {
+    return submission_code(submission) as i64;
+}
+
+fn dispcode(disposition: Disposition) -> (result: i64) {
+    return disposition_code(disposition) as i64;
+}
+
+test incomplete_is_never_invalid() -> (result: TestResult) {
+    let a: bool = subcode(classify_fragment(false, false)) == 0;
+    let b: bool = a && subcode(classify_fragment(false, true)) == 0;
+    return from_assertion(equals_bool(true, b, 9301));
+}
+
+test complete_splits_valid_invalid() -> (result: TestResult) {
+    let a: bool = subcode(classify_fragment(true, false)) == 1;
+    let b: bool = a && subcode(classify_fragment(true, true)) == 2;
+    return from_assertion(equals_bool(true, b, 9302));
+}
+
+test only_valid_commits() -> (result: TestResult) {
+    let a: bool = dispcode(dispose(Submission.INCOMPLETE, false)) == 2;
+    let b: bool = a && dispcode(dispose(Submission.INVALID, true)) == 2;
+    let c: bool = b && dispcode(dispose(Submission.VALID, false)) == 0;
+    return from_assertion(equals_bool(true, c, 9303));
+}
+
+test inspect_only_never_commits() -> (result: TestResult) {
+    return from_assertion(equals_i64(1, dispcode(dispose(Submission.VALID, true)), 9304));
+}
+
+test generation_advances_by_one() -> (result: TestResult) {
+    let a: bool = generation_ok(5, 6);
+    let b: bool = a && generation_ok(0, 1);
+    return from_assertion(equals_bool(true, b, 9305));
+}
+
+test generation_rejects_skip_replay_stay() -> (result: TestResult) {
+    let a: bool = generation_ok(5, 7) == false;
+    let b: bool = a && generation_ok(6, 5) == false;
+    let c: bool = b && generation_ok(5, 5) == false;
+    return from_assertion(equals_bool(true, c, 9306));
+}
+
+test history_clears_source_only() -> (result: TestResult) {
+    let a: bool = reset_clears(ResetScope.HISTORY, StateClass.SOURCE);
+    let b: bool = a && reset_clears(ResetScope.HISTORY, StateClass.SEMANTIC) == false;
+    let c: bool = b && reset_clears(ResetScope.HISTORY, StateClass.RUNTIME) == false;
+    let d: bool = c && reset_clears(ResetScope.HISTORY, StateClass.OBSERVABILITY) == false;
+    return from_assertion(equals_bool(true, d, 9307));
+}
+
+test definitions_clear_tied_artifacts() -> (result: TestResult) {
+    let a: bool = reset_clears(ResetScope.DEFINITIONS, StateClass.SEMANTIC);
+    let b: bool = a && reset_clears(ResetScope.DEFINITIONS, StateClass.PROOF);
+    let c: bool = b && reset_clears(ResetScope.DEFINITIONS, StateClass.ARTIFACT);
+    let d: bool = c && reset_clears(ResetScope.DEFINITIONS, StateClass.RUNTIME) == false;
+    let e: bool = d && reset_clears(ResetScope.DEFINITIONS, StateClass.JIT) == false;
+    return from_assertion(equals_bool(true, e, 9308));
+}
+
+test values_and_code_clears_are_disjoint() -> (result: TestResult) {
+    let a: bool = reset_clears(ResetScope.VALUES, StateClass.RUNTIME);
+    let b: bool = a && reset_clears(ResetScope.VALUES, StateClass.JIT) == false;
+    let c: bool = b && reset_clears(ResetScope.CODE, StateClass.JIT);
+    let d: bool = c && reset_clears(ResetScope.CODE, StateClass.ARTIFACT) == false;
+    let e: bool = d && reset_clears(ResetScope.CODE, StateClass.RUNTIME) == false;
+    return from_assertion(equals_bool(true, e, 9309));
+}
+
+test all_clears_everything() -> (result: TestResult) {
+    let a: bool = reset_clears(ResetScope.ALL, StateClass.SOURCE);
+    let b: bool = a && reset_clears(ResetScope.ALL, StateClass.SEMANTIC);
+    let c: bool = b && reset_clears(ResetScope.ALL, StateClass.PROOF);
+    let d: bool = c && reset_clears(ResetScope.ALL, StateClass.ARTIFACT);
+    let e: bool = d && reset_clears(ResetScope.ALL, StateClass.RUNTIME);
+    let f: bool = e && reset_clears(ResetScope.ALL, StateClass.JIT);
+    let g: bool = f && reset_clears(ResetScope.ALL, StateClass.OBSERVABILITY);
+    return from_assertion(equals_bool(true, g, 9310));
+}
+
+test observability_survives_scoped_clears() -> (result: TestResult) {
+    // Evidence outlives the session state it describes.
+    let a: bool = reset_clears(ResetScope.HISTORY, StateClass.OBSERVABILITY) == false;
+    let b: bool = a && reset_clears(ResetScope.DEFINITIONS, StateClass.OBSERVABILITY) == false;
+    let c: bool = b && reset_clears(ResetScope.VALUES, StateClass.OBSERVABILITY) == false;
+    let d: bool = c && reset_clears(ResetScope.CODE, StateClass.OBSERVABILITY) == false;
+    return from_assertion(equals_bool(true, d, 9311));
+}

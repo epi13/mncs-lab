@@ -1,0 +1,54 @@
+mncs 0.18;
+
+// Proofs of the mncs.lab.variants controlled-comparison semantics. A Lab
+// comparison is only meaningful when exactly the intended dimension varies;
+// these tests pin the counting and the controlled-pair predicate, including
+// the refusal cases (zero diffs, multiple diffs, wrong dimension, wild
+// intended index).
+module tests.lab.variant_tests;
+
+use mncs.lab.variants;
+use mncs.test.assertions;
+use mncs.test.suite;
+
+fn diffs(a0: u64, a1: u64, a2: u64, a3: u64, b0: u64, b1: u64, b2: u64, b3: u64) -> (result: i64) {
+    return diff4(a0, a1, a2, a3, b0, b1, b2, b3) as i64;
+}
+
+test identical_variants_differ_nowhere() -> (result: TestResult) {
+    return from_assertion(equals_i64(0, diffs(7, 7, 7, 7, 7, 7, 7, 7), 9201));
+}
+
+test single_difference_counts_one() -> (result: TestResult) {
+    return from_assertion(equals_i64(1, diffs(1, 2, 3, 4, 1, 9, 3, 4), 9202));
+}
+
+test full_difference_counts_four() -> (result: TestResult) {
+    return from_assertion(equals_i64(4, diffs(1, 2, 3, 4, 5, 6, 7, 8), 9203));
+}
+
+test controlled_pair_accepted() -> (result: TestResult) {
+    // Only dimension 1 differs and it is the intended one.
+    return from_assertion(equals_bool(true, controlled4(1, 1, 2, 3, 4, 1, 9, 3, 4), 9204));
+}
+
+test controlled_pair_accepted_first_dimension() -> (result: TestResult) {
+    return from_assertion(equals_bool(true, controlled4(0, 1, 2, 3, 4, 8, 2, 3, 4), 9205));
+}
+
+test identical_pair_is_not_controlled() -> (result: TestResult) {
+    return from_assertion(equals_bool(false, controlled4(1, 1, 2, 3, 4, 1, 2, 3, 4), 9206));
+}
+
+test double_difference_is_not_controlled() -> (result: TestResult) {
+    return from_assertion(equals_bool(false, controlled4(1, 1, 2, 3, 4, 1, 9, 9, 4), 9207));
+}
+
+test wrong_dimension_is_not_controlled() -> (result: TestResult) {
+    // The difference sits in dimension 0 but dimension 2 was intended.
+    return from_assertion(equals_bool(false, controlled4(2, 1, 2, 3, 4, 8, 2, 3, 4), 9208));
+}
+
+test wild_intended_index_is_not_controlled() -> (result: TestResult) {
+    return from_assertion(equals_bool(false, controlled4(9, 1, 2, 3, 4, 1, 9, 3, 4), 9209));
+}
