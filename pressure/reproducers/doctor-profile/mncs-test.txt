@@ -1,0 +1,12 @@
+      1   17 files checked
+      1   header-health            fail
+      1   migration-availability   fail
+      1   native/mncs/test/obligation_selection.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   native/mncs/test/provider_admission_probe.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   native/mncs/test/provider_failure.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   native/mncs/test/provider_failure_probe.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   native/mncs/test/provider_inventory.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   native/mncs/test/provider.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   native/mncs/test/provider_protocol/v1.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   tests/self_suite.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   version-drift            fail

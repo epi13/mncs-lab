@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import datetime
 import json
+import os
 import tempfile
 from pathlib import Path
 
@@ -58,9 +59,10 @@ def load_definition(path: Path) -> dict:
 
 def check_subjects(definition: dict) -> dict:
     """Reproducibility gate: pinned revisions must match clean checkouts."""
+    family = Path(os.environ.get("MNCS_FAMILY_ROOT", str(REPO.parent)))
     state = {}
     for subject in definition["subjects"]:
-        repo = REPO.parent / subject["repo"] if subject["repo"] != "mncs-lab" else REPO
+        repo = family / subject["repo"] if subject["repo"] != "mncs-lab" else REPO
         head = git_head(repo)
         dirty = git_dirty(repo)
         source = REPO / subject["source"]
@@ -131,6 +133,51 @@ def finite_arg(module: str, enum: str, variant: str, discriminant: int) -> dict:
         "type_identity": f"mncs:0.2:finite-type:{module}::{enum}",
         "variant_identity": f"mncs:0.2:finite-variant:{module}::{enum}::{variant}",
         "discriminant": discriminant}}
+
+
+def analyze_agreement(per_kernel_cases: dict, variant_ids: list) -> dict:
+    """Pure comparison of executed observations.
+
+    Returns agreement lists plus the tally. Disagreement (same case,
+    different returned bytes) contradicts; a case unexecuted on any
+    variant is unknown; anything else agreed supports. Pure so the
+    negative and unknown paths stay unit-testable without an executor.
+    """
+    agreements: list[str] = []
+    disagreements: list[str] = []
+    unknowns: list[str] = []
+    for module, by_variant in per_kernel_cases.items():
+        case_ids = set()
+        for detail in by_variant.values():
+            case_ids.update(detail)
+        for cid in sorted(case_ids):
+            per_variant = {v: by_variant[v].get(cid) for v in variant_ids}
+            if any(o is None or not o["executed"] for o in per_variant.values()):
+                unknowns.append(f"{module}::{cid}")
+            elif len({o["returned_digest"] for o in per_variant.values()}) == 1:
+                agreements.append(f"{module}::{cid}")
+            else:
+                disagreements.append(f"{module}::{cid}")
+    return {
+        "compared": len(agreements) + len(disagreements) + len(unknowns),
+        "agreements": agreements,
+        "disagreements": disagreements,
+        "unknowns": unknowns,
+        "tally": {
+            "supported": len(agreements),
+            "contradicted": len(disagreements),
+            "inconclusive": 0,
+            "unknown": len(unknowns),
+        },
+    }
+
+
+def standing_for_tally(tally: dict) -> str:
+    if tally.get("contradicted", 0) > 0:
+        return "CONTRADICTED"
+    if tally.get("unknown", 0) > 0:
+        return "UNKNOWN"
+    return "SUPPORTED"
 
 
 def run_witness(executor: str, source: Path, backend: str, corpus_doc: dict,
@@ -220,35 +267,13 @@ def execute(definition_path: Path, *, records_dir: Path,
             raise LabError(f"variant integrity witness failed: {integrity_witnesses}")
 
         # Agreement: same case, same returned bytes, across every variant.
-        agreements: list[str] = []
-        disagreements: list[str] = []
-        unknowns: list[str] = []
-        for module, by_variant in per_kernel_cases.items():
-            case_ids = set()
-            for detail in by_variant.values():
-                case_ids.update(detail)
-            for cid in sorted(case_ids):
-                per_variant = {v: by_variant[v].get(cid) for v in
-                               [x["id"] for x in variants]}
-                if any(o is None or not o["executed"] for o in per_variant.values()):
-                    unknowns.append(f"{module}::{cid}")
-                elif len({o["returned_digest"] for o in per_variant.values()}) == 1:
-                    agreements.append(f"{module}::{cid}")
-                else:
-                    disagreements.append(f"{module}::{cid}")
-
-        tally = {
-            "supported": len(agreements),
-            "contradicted": len(disagreements),
-            "inconclusive": 0,
-            "unknown": len(unknowns),
-        }
-        if disagreements:
-            standing = "CONTRADICTED"
-        elif unknowns:
-            standing = "UNKNOWN"
-        else:
-            standing = "SUPPORTED"
+        analysis = analyze_agreement(
+            per_kernel_cases, [x["id"] for x in variants])
+        agreements = analysis["agreements"]
+        disagreements = analysis["disagreements"]
+        unknowns = analysis["unknowns"]
+        tally = analysis["tally"]
+        standing = standing_for_tally(tally)
 
         # Standing witness: mncs.lab.outcome classifies the observed tally;
         # the recorded conclusion must match MNCS, else fail closed.

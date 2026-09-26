@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from mncs_lab.check import standing_for
 from mncs_lab.common import canonical_bytes, digest_bytes, digest_record
+from mncs_lab.runner import analyze_agreement, standing_for_tally
 
 
 def test_standing_rule_matches_mncs_lattice() -> None:
@@ -54,6 +55,42 @@ def test_corpus_generator_is_deterministic() -> None:
             assert left == pinned.read_text(), f"corpus drift: {name}"
 
 
+def _obs(met: bool = True, executed: bool = True, digest: str = "d") -> dict:
+    return {"met": met, "executed": executed, "returned_digest": digest}
+
+
+def test_agreement_supports_identical_returns() -> None:
+    per_kernel = {"m": {"a": {"c1": _obs(digest="d1")},
+                        "b": {"c1": _obs(digest="d1")}}}
+    analysis = analyze_agreement(per_kernel, ["a", "b"])
+    assert analysis["agreements"] == ["m::c1"]
+    assert analysis["tally"]["supported"] == 1
+    assert standing_for_tally(analysis["tally"]) == "SUPPORTED"
+
+
+def test_disagreement_contradicts_and_is_preserved() -> None:
+    # The negative-result path: a differing observation contradicts the
+    # hypothesis and must survive as CONTRADICTED, never collapse.
+    per_kernel = {"m": {"a": {"c1": _obs(digest="d1")},
+                        "b": {"c1": _obs(digest="d2")}}}
+    analysis = analyze_agreement(per_kernel, ["a", "b"])
+    assert analysis["disagreements"] == ["m::c1"]
+    assert analysis["tally"]["contradicted"] == 1
+    assert standing_for_tally(analysis["tally"]) == "CONTRADICTED"
+
+
+def test_unexecuted_case_is_unknown_not_support() -> None:
+    per_kernel = {"m": {"a": {"c1": _obs()},
+                        "b": {"c1": _obs(executed=False)}}}
+    analysis = analyze_agreement(per_kernel, ["a", "b"])
+    assert analysis["unknowns"] == ["m::c1"]
+    assert standing_for_tally(analysis["tally"]) == "UNKNOWN"
+
+
+def test_contradiction_dominates_unknown() -> None:
+    assert standing_for_tally({"contradicted": 1, "unknown": 3}) == "CONTRADICTED"
+
+
 def test_query_filters() -> None:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
     from mncs_lab import query
@@ -68,3 +105,26 @@ def test_query_filters() -> None:
                     "agreement": {"disagreements": ["m::c"]}}
     assert query.summarize(supported)["standing"] == "SUPPORTED"
     assert query.summarize(contradicted)["id"] == "LAB-EXP-902"
+
+
+def test_sidecars_are_not_records() -> None:
+    from mncs_lab.query import is_record_path
+
+    assert is_record_path(Path("experiments/records/LAB-EXP-001.json"))
+    assert not is_record_path(Path("experiments/records/LAB-EXP-001.store.json"))
+
+
+def test_subject_freshness_levels() -> None:
+    from mncs_lab.common import REPO, digest_file, git_head, subject_freshness
+
+    head = git_head(REPO)
+    source = "mncs/lab/outcome.mncs"
+    current = {"subjects": [{"repo": "mncs-lab", "source": source,
+                             "revision": head, "source_digest": digest_file(REPO / source)}]}
+    assert subject_freshness(current) == "current"
+    moved = {"subjects": [{"repo": "mncs-lab", "source": source,
+                           "revision": "0" * 40, "source_digest": digest_file(REPO / source)}]}
+    assert subject_freshness(moved) == "current-content"
+    changed = {"subjects": [{"repo": "mncs-lab", "source": source,
+                             "revision": head, "source_digest": "sha256:dead"}]}
+    assert subject_freshness(changed) == "stale"

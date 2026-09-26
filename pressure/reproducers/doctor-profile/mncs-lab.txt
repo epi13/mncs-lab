@@ -1,0 +1,14 @@
+      1   10 files checked
+      1   header-health            fail
+      1   migration-availability   fail
+      1   mncs/lab/outcome.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   mncs/lab/session.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   mncs/lab/variants.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   pressure/reproducers/select-unknown/branch_kernel.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   pressure/reproducers/select-unknown/select_kernel.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   pressure/reproducers/suite-import/nosuite.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   pressure/reproducers/suite-import/withsuite.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   tests/lab/outcome_tests.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   tests/lab/session_tests.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   tests/lab/variant_tests.mncs:1:1 [DOC102|error] unknown profile 0.18
+      1   version-drift            fail

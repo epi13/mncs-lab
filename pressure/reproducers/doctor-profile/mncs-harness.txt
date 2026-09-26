@@ -1,0 +1,4 @@
+      1   15 files checked
+      1   header-health            pass
+      1   migration-availability   warning
+      1   version-drift            warning

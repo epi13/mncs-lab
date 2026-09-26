@@ -28,8 +28,8 @@ from mncs_lab.common import (
     LabError,
     digest_record,
     find_executor,
-    git_head,
     library_path,
+    subject_freshness,
 )
 from mncs_lab.store_link import verify_record
 
@@ -133,14 +133,8 @@ def check_record(path: Path) -> dict:
         if not (REPO / press).is_file():
             raise LabError(f"{path.name}: pressure link missing: {press}")
 
-    try:
-        current = git_head(REPO)
-    except (OSError, ValueError, subprocess.CalledProcessError):
-        current = None
-    fresh = all(s.get("revision") == current for s in record["subjects"]
-                if s.get("repo") == "mncs-lab") if current else None
     return {"id": record["id"], "standing": record["standing"]["value"],
-            "fresh": fresh}
+            "fresh": subject_freshness(record)}
 
 
 def main() -> int:
@@ -152,7 +146,10 @@ def main() -> int:
     for suite, result in suites.items():
         print(f"{suite}: {result['summary']}")
     records_dir = REPO / "experiments" / "records"
-    records = sorted(records_dir.glob("LAB-EXP-*.json"))
+    from mncs_lab.query import is_record_path
+
+    records = sorted(p for p in records_dir.glob("LAB-EXP-*.json")
+                     if is_record_path(p))
     if not records:
         print("no experiment records yet")
     for path in records:

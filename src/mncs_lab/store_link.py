@@ -32,7 +32,8 @@ def default_store_path() -> Path:
 
 
 def _store_module():
-    root = REPO.parent / "mncs-store" / "python"
+    root = Path(os.environ.get("MNCS_STORE_PYTHON",
+                               str(REPO.parent / "mncs-store" / "python")))
     if not root.is_dir():
         raise LabError("sibling mncs-store checkout missing; cannot persist")
     sys.path.insert(0, str(root))

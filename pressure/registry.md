@@ -16,7 +16,7 @@ below are preserved there as `legacyIds`.
 - **Status:** open
 - **Observed in:** campaign survey + `mncs.lab.session` policy work
 - **Owner candidate:** `mncs-compiler`
-- **Commons record:** `MNCS-COMPILER-<filed at campaign end>` (legacyId `mncs-lab:LAB-PRESS-001`)
+- **Commons record:** `MNCS-COMPILER-40CF32855108` (legacyId `mncs-lab:LAB-PRESS-001`)
 
 **Observed behavior**
 
@@ -72,7 +72,7 @@ Recorded here; family-wide declaration filed in the Commons exchange.
 - **Status:** open, workaround in Lab kernels
 - **Observed in:** LAB-EXP-001 subject preparation (`mncs.lab.variants`)
 - **Owner candidate:** `mncs-language` (experiment contract vs frontend intent)
-- **Commons record:** `MNCS-LANG-<filed at campaign end>` (legacyId `mncs-lab:LAB-PRESS-002`)
+- **Commons record:** `MNCS-LANG-BD5D650AC9D8` (legacyId `mncs-lab:LAB-PRESS-002`)
 
 **Observed behavior**
 
@@ -168,3 +168,54 @@ test-bearing module must `use mncs.test.suite`.
 **Resolution / promotion notes**
 
 Repo-local; no Commons record (minor diagnostic wording, single owner).
+
+---
+
+### LAB-PRESS-004 — Doctor profile registry does not know 0.18
+
+- **Category:** tooling
+- **Severity:** moderate
+- **Status:** open
+- **Observed in:** campaign final verification (`mncs-doctor doctor`)
+- **Owner candidate:** `mncs-doctor`
+
+**Observed behavior**
+
+`mncs-doctor doctor` fails `header-health`, `version-drift`, and
+`migration-availability` with `DOC102 unknown profile 0.18` on every
+0.18 source — including `mncs-test`'s canonical self-suite, which the
+real toolchain runs green. The 0.16 control (`mncs-harness`) passes
+header-health. Doctor's registry lags profiles the family canonicalized
+(`test` declarations since 0.17).
+
+**Minimal reproducer**
+
+`pressure/reproducers/doctor-profile/`: per-repo finding summaries for
+`mncs-lab` (fail), `mncs-test` (fail), `mncs-harness` (pass control).
+
+**Expected behavior**
+
+Doctor knows every profile the pinned toolchain accepts, or scopes the
+failure to genuinely unknown versions instead of released ones.
+
+**Impact**
+
+Moderate: canonical 0.18 repositories cannot pass `doctor`, so the gate
+is unactionable noise for exactly the repos that moved furthest native.
+No safety impact (fail-closed direction, and the toolchain itself is the
+authority for profile acceptance).
+
+**Current workaround**
+
+None in Lab: sources stay at 0.18 (downgrading would forfeit `test`
+declarations); Doctor results on this repo are reported as
+known-skewed until the registry catches up.
+
+**Evidence**
+
+- reproducer directory; `mncs test` PASS vs `doctor` fail on identical files
+
+**Resolution / promotion notes**
+
+Repo-local; no Commons record (single-owner registry lag, already
+visible on mncs-test itself).

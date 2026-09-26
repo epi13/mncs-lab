@@ -1,0 +1,96 @@
+{
+ "schema_version": "mncs-lab.experiment-definition/1",
+ "subjects": [
+  {
+   "kind": "mncs-kernel",
+   "repo": "mncs-lab",
+   "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+   "module": "mncs.lab.outcome",
+   "source": "mncs/lab/outcome.mncs",
+   "source_digest": "sha256:0bb8b16aead8ebb8cf31e4966f50fdaebc7b3db440f749772070d3c00cf31868"
+  },
+  {
+   "kind": "mncs-kernel",
+   "repo": "mncs-lab",
+   "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+   "module": "mncs.lab.variants",
+   "source": "mncs/lab/variants.mncs",
+   "source_digest": "sha256:42c2b23a1e96e5892ca77bf6947d8986e2c2fc0d91b642bbdb924aafaf30cf28"
+  },
+  {
+   "kind": "mncs-kernel",
+   "repo": "mncs-lab",
+   "revision": "a6aa2b8e0a1ecfd2bc94fc7b8a8d9ead0fbcfd2d",
+   "module": "mncs.lab.session",
+   "source": "mncs/lab/session.mncs",
+   "source_digest": "sha256:0c9bd3283d07abc044269fbd6a12371d159bad0d13917c120fe52f6e2d87ce77"
+  }
+ ],
+ "corpora": {
+  "mncs.lab.outcome": "corpora/lab-outcome-corpus.json",
+  "mncs.lab.variants": "corpora/lab-variant-corpus.json",
+  "mncs.lab.session": "corpora/lab-session-corpus.json"
+ },
+ "dimensions": [
+  {
+   "index": 0,
+   "name": "backend",
+   "codes": {
+    "0": "wasm-baseline",
+    "1": "comparison-backend"
+   }
+  },
+  {
+   "index": 1,
+   "name": "reserved",
+   "codes": {}
+  },
+  {
+   "index": 2,
+   "name": "reserved",
+   "codes": {}
+  },
+  {
+   "index": 3,
+   "name": "reserved",
+   "codes": {}
+  }
+ ],
+ "intended_dimension": 0,
+ "controls": [
+  "identical subject source bytes across variants (revision-pinned)",
+  "identical corpora and step budgets across variants",
+  "identical toolchain revision and library path across variants",
+  "only the backend dimension varies between variants"
+ ],
+ "id": "LAB-EXP-002",
+ "question": "Does the Cranelift adapter agree with the portable-WASM baseline on Lab kernel semantics over the fixed corpora?",
+ "hypothesis": {
+  "statement": "The Cranelift adapter returns identical observations to portable-WASM for every case of every Lab kernel corpus.",
+  "predicted_standing": "SUPPORTED"
+ },
+ "variants": [
+  {
+   "id": "wasm",
+   "backend": "mncs-portable-wasm-mvp",
+   "codes": [
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "cranelift",
+   "backend": "mncs-cranelift",
+   "codes": [
+    2,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "evaluation_rule": "SUPPORTED iff every executed case agrees across variants with zero unknown; any disagreement -> CONTRADICTED; any variant-level execution gap -> UNKNOWN; integrity-witness failure -> INCONCLUSIVE.",
+ "pressures": []
+}

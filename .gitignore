@@ -17,3 +17,6 @@ target/
 # Python caches
 __pycache__/
 *.pyc
+
+# Tool cache
+.mncs/

@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout pinned family sources
+        uses: actions/checkout@v4
+        with:
+          # Pinned below; bump only with a Lab toolchain revision change.
+          repository: epi13/mncs-language
+          ref: 066897e97a8499a25ea33611d47cc7a4fcdc2b48
+          path: .dependencies/mncs-language
+      - uses: actions/checkout@v4
+        with:
+          repository: epi13/mncs-test
+          ref: 028f333ffcf76b6706a17552549727ecb33f3cbf
+          path: .dependencies/mncs-test
+      - uses: actions/checkout@v4
+        with:
+          repository: epi13/mncs-store
+          ref: dd11dd628ae553077c784e36e8e3372079c77519
+          path: .dependencies/mncs-store
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions-rust-lang/rustup@v1
+        with:
+          toolchain: stable
+      - name: Provision pinned MNCS executor
+        run: |
+          python scripts/fetch_mncs_executor.py --dest '${{ runner.temp }}/mncs-bin/mncs-executor'
+          echo "MNCS_EXECUTOR=${{ runner.temp }}/mncs-bin/mncs-executor" >> "$GITHUB_ENV"
+      - name: Build embed library for Store verification
+        run: cargo build --release -p mncs-embed
+        working-directory: .dependencies/mncs-language
+      - name: Ruff
+        run: ruff check src scripts tests
+      - name: Host tests
+        run: python -m pytest tests/test_lab.py -q -p no:cacheprovider
+      - name: Enforcement boundary
+        run: python scripts/lab_check.py
+        env:
+          MNCS_FAMILY_ROOT: ${{ github.workspace }}/.dependencies
+          MNCS_TEST_NATIVE: ${{ github.workspace }}/.dependencies/mncs-test/native
+          MNCS_LANGUAGE_LIBRARY: ${{ github.workspace }}/.dependencies/mncs-language/library
+          MNCS_LANGUAGE_ROOT: ${{ github.workspace }}/.dependencies/mncs-language
+          MNCS_STORE_PYTHON: ${{ github.workspace }}/.dependencies/mncs-store/python
+          MNCS_LAB_STORE: ${{ runner.temp }}/mncs-lab-store

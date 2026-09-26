@@ -9,34 +9,32 @@ Every query here reads only ``experiments/records/LAB-EXP-*.json``.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from mncs_lab.common import REPO, git_head
+from mncs_lab.common import REPO, subject_freshness
 
 RECORDS = REPO / "experiments" / "records"
+
+
+def is_record_path(path: Path) -> bool:
+    """Publication sidecars live beside records but are not records."""
+    return path.suffix == ".json" and not path.name.endswith(".store.json")
 
 
 def all_records() -> list:
     records = []
     for path in sorted(RECORDS.glob("LAB-EXP-*.json")):
+        if not is_record_path(path):
+            continue
         records.append(json.loads(path.read_text(encoding="utf-8")))
     return records
 
 
 def freshness(record: dict) -> str | None:
-    try:
-        current = git_head(REPO)
-    except (OSError, ValueError, subprocess.CalledProcessError):
-        return None
-    revisions = {s.get("revision") for s in record.get("subjects", [])
-                 if s.get("repo") == "mncs-lab"}
-    if not revisions:
-        return None
-    return "current" if revisions == {current} else "stale"
+    return subject_freshness(record)
 
 
 def summarize(record: dict) -> dict:
