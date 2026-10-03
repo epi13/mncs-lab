@@ -1,6 +1,9 @@
 # Roadmap
 
 <!-- MNCS:generated:begin -->
+## Evidence-bound roadmap
+
+- **complete** — Declared ambient projection surfaces satisfy their contract (`mncs-lab:projection-conformance`)
 <!-- MNCS:generated:end -->
 
 Evidence-driven as before; this revision records what the native

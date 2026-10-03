@@ -1,0 +1,23 @@
+{
+  "capabilities": [
+    {
+      "contract": "experiment-discipline",
+      "fingerprint_sources": [
+        "mncs/lab/"
+      ],
+      "kind": "mncs-library",
+      "stability": "experimental",
+      "version": "0.1"
+    }
+  ],
+  "dependencies": [],
+  "entry": [
+    "python3 scripts/lab_check.py",
+    "python3 scripts/lab_run.py experiments/definitions/LAB-EXP-001.json"
+  ],
+  "purpose": "Controlled investigations over MNCS behavior as a current MNCS application: typed experiment definitions, MNCS-native comparison and outcome semantics, Test-proven kernels, canonical execution, digest-pinned records, and grounded language/compiler pressure with reproducers.",
+  "repository": "mncs-lab",
+  "schema_version": "mncs.project-view/1",
+  "source_identity": "sha256:3b17ca293808f8be056a1d7abe86b824feb788785a48912a249d44f97122cd28",
+  "structure": {}
+}

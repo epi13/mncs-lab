@@ -1,6 +1,23 @@
 # mncs-lab
 
 <!-- MNCS:generated:begin -->
+## Project entry
+
+Controlled investigations over MNCS behavior as a current MNCS application: typed experiment definitions, MNCS-native comparison and outcome semantics, Test-proven kernels, canonical execution, digest-pinned records, and grounded language/compiler pressure with reproducers.
+
+```bash
+python3 scripts/lab_check.py
+```
+
+```bash
+python3 scripts/lab_run.py experiments/definitions/LAB-EXP-001.json
+```
+
+Declared capabilities (declarations do not establish execution health):
+
+- `experiment-discipline/0.1` — mncs-library (experimental)
+
+Semantic sources and ownership: `.mncs/projections.json`.
 <!-- MNCS:generated:end -->
 
 Controlled investigations over MNCS behavior, realized as a current MNCS
