@@ -1,5 +1,8 @@
 # mncs-lab
 
+<!-- MNCS:generated:begin -->
+<!-- MNCS:generated:end -->
+
 Controlled investigations over MNCS behavior, realized as a current MNCS
 application: typed experiment definitions, MNCS-native comparison and
 outcome semantics, Test-proven kernels, canonical execution, digest-pinned

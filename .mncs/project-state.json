@@ -1,0 +1,18 @@
+{
+  "schema_version": "mncs.project-intent/1",
+  "purpose": "Controlled investigations over MNCS behavior as a current MNCS application: typed experiment definitions, MNCS-native comparison and outcome semantics, Test-proven kernels, canonical execution, digest-pinned records, and grounded language/compiler pressure with reproducers.",
+  "entry": [
+    "python3 scripts/lab_check.py",
+    "python3 scripts/lab_run.py experiments/definitions/LAB-EXP-001.json"
+  ],
+  "milestones": [
+    {
+      "id": "mncs-lab:projection-conformance",
+      "title": "Declared ambient projection surfaces satisfy their contract",
+      "subject_slot": "declarations",
+      "evidence": "projection-conformance",
+      "dependencies": [],
+      "blockers": []
+    }
+  ]
+}

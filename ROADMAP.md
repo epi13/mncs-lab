@@ -1,5 +1,8 @@
 # Roadmap
 
+<!-- MNCS:generated:begin -->
+<!-- MNCS:generated:end -->
+
 Evidence-driven as before; this revision records what the native
 realization campaign established and what remains genuinely blocked.
 

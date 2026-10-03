@@ -18,5 +18,5 @@ target/
 __pycache__/
 *.pyc
 
-# Tool cache
-.mncs/
+# Tool cache (derived local state only; canonical .mncs sources commit)
+.mncs/doctor/
